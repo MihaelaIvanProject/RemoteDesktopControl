@@ -1,7 +1,7 @@
-import asyncio
-import json
+import asyncio #utilizat pentru a trasmite informatii de la desktop
+import json #utilizat in trasferul de date
 import logging
-import psutil
+import psutil #biblioteca pentru preluarea informatiilor despre procesele care ruleaza si utilizarea sistemului (CPU, memorie, retea, senzori) in Python.
 import sys
 import websockets
 
@@ -13,7 +13,7 @@ logger.setLevel(logging.DEBUG)
 def json_to_payload(message):
     return json.dumps(message)
 
-
+# raporteaza catre web procent de utilizare CPU, este folosita functia cpu_usage_reporter() continuta de biblioteca psutil
 async def cpu_usage_reporter(websocket):
     psutil.cpu_percent()
     while (True):
@@ -23,12 +23,12 @@ async def cpu_usage_reporter(websocket):
             'value': psutil.cpu_percent(),
         }
         await websocket.send(json_to_payload(message))
-        logger.debug(f'Sent message to server: {message}')
+        logger.debug(f'Transmite mesaj catre server: {message}')
 
 
 async def consumer(message):
     json_message = json.loads(message)
-    logger.debug(f'Server message received: {json_message}')
+    logger.debug(f'Mesaj server primit: {json_message}')
 
     if (json_message['event'] == 'beep'):
         print("\a")
