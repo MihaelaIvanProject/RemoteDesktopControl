@@ -1,15 +1,15 @@
-from starlette.applications import Starlette
+from starlette.applications import Starlette    #adaugarea bibliotecii Starlettee utilizata in realizarea conexiunii WebSockets 
 from starlette.websockets import WebSocketDisconnect
-import json
+import json #utilizat in trasferul de date intre conexiunile de retea
 import logging
-import uvicorn
+import uvicorn #utilizat in implementarea web server
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 app = Starlette()
 
-websockets = {
+websockets = { # o conexiune websocket va fi realizata intre web si desktop
     'web': {},
     'desktop': {},
 }
@@ -24,39 +24,39 @@ async def receive_json(websocket):
 async def websocket_endpoint(websocket):
     await websocket.accept()
 
-    # "Authentication" message
+    # mesaj de autentificare print-un client id
     message = await receive_json(websocket)
     client_mode = message['client_mode']
     client_id = message['client_id']
     websockets[client_mode][client_id] = websocket
 
-    # Get mirror mode to broadcast messages to the client on the other side
+    # obtinerea modului oglinda pentru a trasmite mesaje catre client
     mirror_mode = 'web' if client_mode == 'desktop' else 'desktop'
 
     client_string = f'{client_id}[{client_mode}]'
-    logger.info(f'Client connected: {client_string}')
+    logger.info(f'Client conectat: {client_string}')
 
     while (True):
         try:
-            # Wait for a message from the client
+            # asteapta un mesaj de la client
             message = await receive_json(websocket)
-            logger.debug(f'Message received from {client_string}: {message}')
+            logger.debug(f'Mesaj primit de la {client_string}: {message}')
 
             try:
-                # Broadcast it to the mirror client
+                # trasmitere catre mirror client
                 await websockets[mirror_mode][client_id].send_text(
                     json.dumps(message)
                 )
             except KeyError:
                 logger.debug(
-                    f'Client {client_id}[{mirror_mode}] not connected'
+                    f'Client {client_id}[{mirror_mode}] neconectat'
                 )
         except WebSocketDisconnect:
             break
 
     del websockets[client_mode][client_id]
     await websocket.close()
-    logger.info(f'Client disconnected: {client_string}')
+    logger.info(f'Client deconectat: {client_string}')
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
