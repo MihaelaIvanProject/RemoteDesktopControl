@@ -23,7 +23,20 @@ async def cpu_usage_reporter(websocket):
             'value': psutil.cpu_percent(),
         }
         await websocket.send(json_to_payload(message))
-        logger.debug(f'Transmite mesaj catre server: {message}')
+        logger.debug(f'Transmite CPU usage catre server: {message}')
+
+
+async def ram_usage_reporter(websocket):
+    psutil.virtual_memory()
+    while (True):
+        await asyncio.sleep(1)
+        message = {
+            'event': 'ram',
+            'value': psutil.virtual_memory().percent,
+        }
+        await websocket.send(json_to_payload(message))
+        logger.debug(f'Transmite RAM usage catre server: {message}')
+
 
 
 async def consumer(message):
@@ -52,8 +65,10 @@ async def handler(uri, client_id):
             consumer_handler(websocket))
         producer_task = asyncio.ensure_future(
             cpu_usage_reporter(websocket))
+        producer_task2 = asyncio.ensure_future(
+            ram_usage_reporter(websocket))
         done, pending = await asyncio.wait(
-            [consumer_task, producer_task],
+            [consumer_task, producer_task, producer_task2],
             return_when=asyncio.FIRST_COMPLETED,
         )
         for task in pending:
