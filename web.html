@@ -10,7 +10,7 @@
                         client_id: clientId,
                         client_mode: 'web',
                     }))
-                    document.getElementById('status').textContent = `Connected`
+                    document.getElementById('status').textContent = Connected
                     document.getElementById('client_id').textContent = clientId
                 }
                 socket.onmessage = (event) => {
@@ -27,7 +27,7 @@
 
             const disconnectSocket = (socket) => {
                 socket.close()
-                document.getElementById('status').textContent = `Disconnected`
+                document.getElementById('status').textContent = Disconnected
             }
 
             document.addEventListener("DOMContentLoaded", () => {
@@ -51,15 +51,17 @@
         </script>
     </head>
     <body>
+        <center> 
         <h1>Status: <span id="status">Disconnected</span></h1>
         <h1>Client ID: <span id="client_id">?</span></h1>
         <h1>CPU usage: <span id="value">?</span>%</h1>
-        <h1><button type="button" id="beep_button">Beep</button></h1>
-        
+        <h1>RAM usage: <span id="value">?</span>%</h1>
+        <h1><button type="button" id="beep_button">Hello</button></h1>  
         <form id="connect_form">
             <input type="text" id="client_id_input" placeholder="client_id" />
-            <button type="submit">Connect</button>
-            <button type="button" id="disconnect_button">Disconnect</button>
         </form>
+        <h1><button type="submit" style="background-color:green" >CONECTARE</button>
+            <button type="button" style="background-color:red" id="disconnect_button">DECONECTARE</button></h1>
+        </center>
     </body>
 </html>
