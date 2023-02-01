@@ -14,7 +14,7 @@ websockets = { # o conexiune websocket va fi realizata intre web si desktop
     'desktop': {},
 }
 
-
+#receptionarea mesajelor 
 async def receive_json(websocket):
     message = await websocket.receive_text()
     return json.loads(message)
@@ -32,7 +32,7 @@ async def websocket_endpoint(websocket):
 
     # obtinerea modului oglinda pentru a trasmite mesaje catre client
     mirror_mode = 'web' if client_mode == 'desktop' else 'desktop'
-
+    
     client_string = f'{client_id}[{client_mode}]'
     logger.info(f'Client conectat: {client_string}')
 
@@ -49,7 +49,7 @@ async def websocket_endpoint(websocket):
                 )
             except KeyError:
                 logger.debug(
-                    f'Client {client_id}[{mirror_mode}] neconectat'
+                    f'Client {client_id}[{mirror_mode}] deconectat'
                 )
         except WebSocketDisconnect:
             break
