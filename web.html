@@ -10,7 +10,7 @@
                         client_id: clientId,
                         client_mode: 'web',
                     }))
-                    document.getElementById('status').textContent = CONECTAT
+                    document.getElementById('status').textContent = 'CONECTAT'
                     document.getElementById('client_id').textContent = clientId
                 }
                 socket.onmessage = (event) => {
@@ -18,10 +18,10 @@
                     if (message.event === 'cpu') {
                         document.getElementById('value').textContent = message.value
                     }
-		    else
-		    {
-			document.getElementById('value2').textContent = message.value
-		    }
+					else
+					{
+					document.getElementById('value2').textContent = message.value
+					}
                 }
 
                 window.addEventListener('unload', (event) => socket.close())
@@ -31,7 +31,7 @@
 
             const disconnectSocket = (socket) => {
                 socket.close()
-                document.getElementById('status').textContent = DECONECTAT
+                document.getElementById('status').textContent = 'DECONECTAT'
             }
 
             document.addEventListener("DOMContentLoaded", () => {

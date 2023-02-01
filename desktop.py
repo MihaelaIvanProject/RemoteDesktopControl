@@ -13,7 +13,7 @@ logger.setLevel(logging.DEBUG)
 def json_to_payload(message):
     return json.dumps(message)
 
-# raporteaza catre web procent de utilizare CPU, este folosita functia cpu_usage_reporter() continuta de biblioteca psutil
+# raporteaza catre web procentul de utilizare CPU, este folosita functia cpu_usage_reporter() continuta de biblioteca psutil
 async def cpu_usage_reporter(websocket):
     psutil.cpu_percent()
     while (True):
@@ -25,7 +25,7 @@ async def cpu_usage_reporter(websocket):
         await websocket.send(json_to_payload(message))
         logger.debug(f'Transmite CPU usage catre server: {message}')
 
-
+# raporteaza catre web procentul de utilizare RAM, este folosita functia virtual_memory() continuta de biblioteca psutil
 async def ram_usage_reporter(websocket):
     psutil.virtual_memory()
     while (True):
@@ -46,7 +46,7 @@ async def consumer(message):
     if (json_message['event'] == 'beep'):
         print("\a")
 
-
+# transmiterea unui mesaj beep pentru a confirma transmiterea mesajelor
 async def consumer_handler(websocket):
     async for message in websocket:
         await consumer(message)
